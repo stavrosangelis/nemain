@@ -4,6 +4,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/aided-loegairi-buadaig/',
   plugins: [react()],
   server: {
     host: '0.0.0.0',

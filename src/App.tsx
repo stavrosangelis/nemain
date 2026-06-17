@@ -6,7 +6,7 @@ import "./App.css";
 function App() {
   return (
     <ErrorBoundary FallbackComponent={() => <div>⚠️Something went wrong.</div>}>
-      <BrowserRouter basename="/">
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <NavigationRoutes />
       </BrowserRouter>
     </ErrorBoundary>
