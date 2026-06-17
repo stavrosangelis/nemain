@@ -1,0 +1,18 @@
+@import "@fontsource/uncial-antiqua";
+
+.banner-title {
+  font-family: "Uncial Antiqua", system-ui !important;
+  font-size: 22px !important;
+  max-width: 300px;
+  color: #FFF;
+}
+.logo {
+  width: 60px;
+  height: auto;
+  border-radius: 4px;
+}
+.logo-small {
+  width: 60px;
+  height: auto;
+  border-radius: 4px;
+}

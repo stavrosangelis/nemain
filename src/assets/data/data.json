@@ -1,0 +1,853 @@
+[
+  {
+    "id": 1,
+    "character_name": "Fergus mac Leiti",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "King over the clanna Rudraige",
+    "gender": "M",
+    "friendly": [
+      "Eisirt mac Bic mic Buaidgeine",
+      "Iubdán mac Abdáin"
+    ],
+    "hostile": [],
+    "familial_links": [
+      "Rudraige"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 2,
+    "character_name": "Rudraige",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Father of Fergus mac Leiti",
+    "gender": "M",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 3,
+    "character_name": "Eirgenn",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Fergus",
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti",
+      "Aimirgin iurtunach",
+      "Conna Buide mac Illiach",
+      "Dubán mac Luigdech",
+      "Eisirt mac Bic mic Buaidgeine"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 4,
+    "character_name": "Aimirgin iurtunach",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Fergus",
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti",
+      "Conna Buide mac Illiach",
+      "Dubán mac Luigdech",
+      "Eisirt mac Bic mic Buaidgeine"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 5,
+    "character_name": "Conna Buide mac Illiach",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Fergus",
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti",
+      "Dubán mac Luigdech",
+      "Eisirt mac Bic mic Buaidgeine"
+    ],
+    "hostile": [],
+    "familial_links": [
+      "Iliach mac Rugraige"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 6,
+    "character_name": "Iliach mac Rugraige",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Familial, only Iliach here",
+    "gender": "M",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 7,
+    "character_name": "Dubán mac Luigdech",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Fergus",
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti",
+      "Eisirt mac Bic mic Buaidgeine"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 8,
+    "character_name": "Iubdán mac Abdáin",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "King of the tuatha luchra and lupracánach",
+    "gender": "M",
+    "friendly": [
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [
+      "Bébó"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 9,
+    "character_name": "Conán mac Ruichid",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Gerrchú mac Gairid",
+      "Rigbec mac Róbic",
+      "Luiccín mac Luiccid",
+      "Glúnán mac Gabairn",
+      "Febal mac Feoirnín",
+      "Cinnbec mac Gnumáin",
+      "Brigbec mac Buain",
+      "Bran mac Luain",
+      "Mether mac Mintáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 10,
+    "character_name": "Gerrchú mac Gairid",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Rigbec mac Róbic",
+      "Luiccín mac Luiccid",
+      "Glúnán mac Gabairn",
+      "Febal mac Feoirnín",
+      "Cinnbec mac Gnumáin",
+      "Brigbec mac Buain",
+      "Bran mac Luain",
+      "Mether mac Mintáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 11,
+    "character_name": "Rigbec mac Róbic",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Luiccín mac Luiccid",
+      "Glúnán mac Gabairn",
+      "Febal mac Feoirnín",
+      "Cinnbec mac Gnumáin",
+      "Brigbec mac Buain",
+      "Bran mac Luain",
+      "Mether mac Mintáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 12,
+    "character_name": "Luiccín mac Luiccid",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Glúnán mac Gabairn",
+      "Febal mac Feoirnín",
+      "Cinnbec mac Gnumáin",
+      "Brigbec mac Buain",
+      "Bran mac Luain",
+      "Mether mac Mintáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 13,
+    "character_name": "Glúnán mac Gabairn",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Febal mac Feoirnín",
+      "Cinnbec mac Gnumáin",
+      "Brigbec mac Buain",
+      "Bran mac Luain",
+      "Mether mac Mintáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 14,
+    "character_name": "Febal mac Feoirnín",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Cinnbec mac Gnumáin",
+      "Brigbec mac Buain",
+      "Bran mac Luain",
+      "Mether mac Mintáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 15,
+    "character_name": "Cinnbec mac Gnumáin",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Brigbec mac Buain",
+      "Bran mac Luain",
+      "Mether mac Mintáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 16,
+    "character_name": "Brigbec mac Buain",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Bran mac Luain",
+      "Mether mac Mintáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 17,
+    "character_name": "Bran mac Luain",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Mether mac Mintáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 18,
+    "character_name": "Mether mac Mintáin",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Man of arm of Iubdán",
+    "gender": "M",
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Glómhar mac Glaiss mic Glomraide",
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 19,
+    "character_name": "Glómhar mac Glaiss mic Glomraide",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Strongman of the lupracán, goes to Iubdán’s feast",
+    "gender": "M",
+    "friendly": [
+      "Bec mac Bic",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó",
+      "Aedh (ollam Ulad)"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 20,
+    "character_name": "Bec mac Bic",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Iudbdán’s presumptive successor",
+    "gender": "M",
+    "friendly": [
+      "Eisirt mac Bic mic Buaidgeine",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 21,
+    "character_name": "Eisirt mac Bic mic Buaidgeine",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Ollam of Iubdán, predicts ill on Iubdán because he seized him after mentioning someone was better than him. Mentions Cobtach, Eochaid, and Fergus mac L.",
+    "gender": "M",
+    "friendly": [
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 22,
+    "character_name": "Bébó",
+    "alternate_names": null,
+    "page": 238,
+    "role_notes": "Iubdán’s wife",
+    "gender": "F",
+    "friendly": [
+      "Fergus mac Leiti"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 23,
+    "character_name": "Cobtach Cas",
+    "alternate_names": null,
+    "page": 239,
+    "role_notes": "Son of the king of Munster, mentioned by Eisirt",
+    "gender": "M",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 24,
+    "character_name": "Eochaid mac Néid",
+    "alternate_names": null,
+    "page": 239,
+    "role_notes": "Son of the king of Leinster, mentioned by Eisirt",
+    "gender": "M",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 25,
+    "character_name": "Door-keeper (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 240,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [
+      "Eisirt mac Bic mic Buaidgeine",
+      "Fergus mac Leiti",
+      "Eirgenn",
+      "Aimirgin iurtunach",
+      "Conna Buide mac Illiach",
+      "Dubán mac Luigdech"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 26,
+    "character_name": "Aedh (ollam Ulad)",
+    "alternate_names": null,
+    "page": 240,
+    "role_notes": "Poet of Ulster, and a dwarf",
+    "gender": "M",
+    "friendly": [
+      "Door-keeper (Aidedh Ferghusa meic Léide)",
+      "Fergus mac Leiti",
+      "Eirgenn",
+      "Aimirgin iurtunach",
+      "Conna Buide mac Illiach",
+      "Dubán mac Luigdech",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Iubdán mac Abdáin",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 27,
+    "character_name": "A cupbearer (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 240,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti",
+      "Aimirgin iurtunach",
+      "Conna Buide mac Illiach",
+      "Dubán mac Luigdech",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Door-keeper (Aidedh Ferghusa meic Léide)",
+      "Aedh (ollam Ulad)"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 28,
+    "character_name": "Fergus mac Leiti’s steward",
+    "alternate_names": null,
+    "page": 241,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti"
+    ],
+    "hostile": [],
+    "familial_links": [
+      "Fergus mac Leiti’s steward’s wife"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 29,
+    "character_name": "Fergus mac Leiti’s steward’s wife",
+    "alternate_names": null,
+    "page": 241,
+    "role_notes": "Fergus is said to be having an affair with her",
+    "gender": "F",
+    "friendly": [
+      "Fergus mac Leiti"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 30,
+    "character_name": "Fergus mac Leiti’s foster son",
+    "alternate_names": null,
+    "page": 241,
+    "role_notes": "Said to be ogling the queen",
+    "gender": "M",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": "Fergus mac Leiti"
+  },
+  {
+    "id": 31,
+    "character_name": "Fergus mac Leiti’s queen",
+    "alternate_names": "Aillin ingen Echach",
+    "page": 241,
+    "role_notes": null,
+    "gender": "F",
+    "friendly": [
+      "Fergus mac Leiti"
+    ],
+    "hostile": [],
+    "familial_links": [
+      "Fergus mac Leiti"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 32,
+    "character_name": "Iubdán’s horse",
+    "alternate_names": null,
+    "page": 242,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [
+      "Eisirt mac Bic mic Buaidgeine",
+      "Aedh (ollam Ulad)",
+      "Iubdán mac Abdáin",
+      "Bébó"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 33,
+    "character_name": "Luchra people",
+    "alternate_names": null,
+    "page": 241,
+    "role_notes": null,
+    "gender": null,
+    "friendly": [
+      "Iubdán mac Abdáin",
+      "Eisirt mac Bic mic Buaidgeine",
+      "Aedh (ollam Ulad)",
+      "Fergus mac Leiti"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 34,
+    "character_name": "Fer dédh",
+    "alternate_names": null,
+    "page": 244,
+    "role_notes": "Fergus mac Leiti’s servant",
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti",
+      "Iubdán mac Abdáin"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 35,
+    "character_name": "The women (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 246,
+    "role_notes": null,
+    "gender": "F",
+    "friendly": [
+      "Fergus mac Leiti",
+      "Iubdán mac Abdáin"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 36,
+    "character_name": "A soldier of Fergus mac Leiti",
+    "alternate_names": null,
+    "page": 246,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti",
+      "Iubdán mac Abdáin"
+    ],
+    "hostile": [
+      "A man 4 (Aidedh Ferghusa meic Léide)"
+    ],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 37,
+    "character_name": "A man (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 246,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [
+      "A man’s wife (Aidedh Ferghusa meic Léide)"
+    ],
+    "hostile": [],
+    "familial_links": [
+      "A man’s wife (Aidedh Ferghusa meic Léide)"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 38,
+    "character_name": "A man 2 (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 246,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 39,
+    "character_name": "A man’s wife (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 246,
+    "role_notes": null,
+    "gender": "F",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 40,
+    "character_name": "A man 3 (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 246,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [
+      "A man’s wife (Aidedh Ferghusa meic Léide)"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 41,
+    "character_name": "A man 4 (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 246,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 42,
+    "character_name": "Ulstermen",
+    "alternate_names": null,
+    "page": 246,
+    "role_notes": null,
+    "gender": null,
+    "friendly": [
+      "Fergus mac Leiti",
+      "Luchra people",
+      "Iubdán mac Abdáin"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 43,
+    "character_name": "A man of the Luchra (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 247,
+    "role_notes": "Recites a lay",
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti",
+      "Iubdán mac Abdáin"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 44,
+    "character_name": "Iubdán’s great-grandmother",
+    "alternate_names": null,
+    "page": 248,
+    "role_notes": "Mentioned in lay by Iubdán",
+    "gender": "F",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [
+      "Iubdán mac Abdáin"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 45,
+    "character_name": "Eisirt’s wife",
+    "alternate_names": null,
+    "page": 249,
+    "role_notes": "Mentioned in lay by Aedh",
+    "gender": "F",
+    "friendly": [
+      "Aedh (ollam Ulad)"
+    ],
+    "hostile": [],
+    "familial_links": [
+      "Eisirt mac Bic mic Buaidgeine"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 46,
+    "character_name": "Ferór",
+    "alternate_names": null,
+    "page": 249,
+    "role_notes": "Mentioned in lay by Aedh, Iubdán’s cupbearer",
+    "gender": "M",
+    "friendly": [
+      "Aedh (ollam Ulad)",
+      "Iubdán mac Abdáin"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 47,
+    "character_name": "A young man (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 250,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [
+      "Fergus mac Leiti"
+    ],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 48,
+    "character_name": "Sinech locha Rudraige",
+    "alternate_names": null,
+    "page": 250,
+    "role_notes": "Monster in Loch Rudraige",
+    "gender": "F",
+    "friendly": [],
+    "hostile": [
+      "Fergus mac Leiti",
+      "A young man (Aidedh Ferghusa meic Léide)",
+      "Ulstermen"
+    ],
+    "familial_links": [],
+    "foster_links": null
+  },
+  {
+    "id": 49,
+    "character_name": "The young man’s wife (Aidedh Ferghusa meic Léide)",
+    "alternate_names": null,
+    "page": 250,
+    "role_notes": null,
+    "gender": "F",
+    "friendly": [
+      "A young man (Aidedh Ferghusa meic Léide)",
+      "Fergus mac Leiti’s queen"
+    ],
+    "hostile": [],
+    "familial_links": [
+      "A young man (Aidedh Ferghusa meic Léide)"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 50,
+    "character_name": "Fergus mac Rosa Rúaid",
+    "alternate_names": null,
+    "page": 252,
+    "role_notes": "Mentioned by Fergus mac Leiti as the one deserving of his sword",
+    "gender": "M",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [
+      "Rosa Rúaid"
+    ],
+    "foster_links": null
+  },
+  {
+    "id": 51,
+    "character_name": "Rosa Rúaid",
+    "alternate_names": null,
+    "page": 252,
+    "role_notes": null,
+    "gender": "M",
+    "friendly": [],
+    "hostile": [],
+    "familial_links": [],
+    "foster_links": null
+  }
+]
