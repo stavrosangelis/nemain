@@ -1,4 +1,10 @@
-@import "@fontsource/uncial-antiqua";
+@font-face {
+  font-family: "Gaze";
+  src: url("./assets/fonts/GazeNormal.woff2") format("woff2"),
+       url("./assets/fonts/GazeNormal.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 
 h1,
 h2,
@@ -6,10 +12,10 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Uncial Antiqua", system-ui !important;
+  font-family: "Gaze", system-ui !important;
   font-weight: 400;
 }
 body {
-  background-color: var(--color-2) !important;
+  background-color: var(--color-6) !important;
   margin: 0;
 }

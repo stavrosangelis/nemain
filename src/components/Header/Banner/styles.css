@@ -1,7 +1,5 @@
-@import "@fontsource/uncial-antiqua";
-
 .banner-title {
-  font-family: "Uncial Antiqua", system-ui !important;
+  font-family: "Gaze", system-ui !important;
   font-size: 22px !important;
   max-width: 300px;
   color: #FFF;
