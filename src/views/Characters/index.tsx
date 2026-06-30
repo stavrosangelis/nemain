@@ -1,4 +1,4 @@
 import CharactersView from "./Characters";
-// import CharacterView from "./Character";
+import CharacterView from "./Character";
 
-export { /* CharacterView ,*/ CharactersView };
+export { CharacterView, CharactersView };

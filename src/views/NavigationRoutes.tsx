@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router";
 import Layout from "./Layout";
 import NotFound from "./NotFound";
 import HomePageView from "./Home";
-import { /* CharacterView ,*/ CharactersView } from "./Characters";
+import { CharacterView, CharactersView } from "./Characters";
 import NetworkView from "./Network";
 
 export default function NavigationRoutes() {
@@ -13,7 +13,7 @@ export default function NavigationRoutes() {
           <Route path="/" element={<HomePageView />} />
           <Route path="/characters" element={<CharactersView />} />
           <Route path="/network" element={<NetworkView />} />
-          {/* <Route path="/persons/:id" element={<CharacterView />} /> */}
+          <Route path="/characters/:id" element={<CharacterView />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

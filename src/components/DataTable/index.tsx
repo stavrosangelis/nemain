@@ -57,7 +57,11 @@ export default function DataTable(props: Props) {
       if (oldRow) {
         Object.keys(newRow).forEach((field) => {
           if (field !== "id" && oldRow[field] !== newRow[field]) {
-            onCellEdit({ id: newRow.id as number, field, value: newRow[field] });
+            onCellEdit({
+              id: newRow.id as number,
+              field,
+              value: newRow[field],
+            });
           }
         });
       }
@@ -67,7 +71,7 @@ export default function DataTable(props: Props) {
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     const virtualScroller = e.currentTarget.querySelector(
-      ".MuiDataGrid-virtualScroller"
+      ".MuiDataGrid-virtualScroller",
     ) as HTMLElement;
     if (!virtualScroller) return;
     const isScrollable =
@@ -89,7 +93,11 @@ export default function DataTable(props: Props) {
   const controlledPaginationProps =
     paginationModel !== undefined
       ? { paginationModel, onPaginationModelChange }
-      : { initialState: { pagination: { paginationModel: defaultPaginationModel } } };
+      : {
+          initialState: {
+            pagination: { paginationModel: defaultPaginationModel },
+          },
+        };
 
   return (
     <Paper
@@ -107,7 +115,9 @@ export default function DataTable(props: Props) {
         paginationMode={isServerPagination ? "server" : "client"}
         rowCount={isServerPagination ? rowCount : undefined}
         pageSizeOptions={
-          isServerPagination ? [10, 25, 50, 100] : [10, 25, 50, 100, { value: -1, label: "All" }]
+          isServerPagination
+            ? [10, 25, 50, 100]
+            : [10, 25, 50, 100, { value: -1, label: "All" }]
         }
         {...controlledPaginationProps}
         // Sorting
@@ -115,7 +125,9 @@ export default function DataTable(props: Props) {
         {...(sortModel !== undefined ? { sortModel, onSortModelChange } : {})}
         // Filtering
         filterMode={isServerFilter ? "server" : "client"}
-        {...(filterModel !== undefined ? { filterModel, onFilterModelChange } : {})}
+        {...(filterModel !== undefined
+          ? { filterModel, onFilterModelChange }
+          : {})}
         // Toolbar
         slots={showToolbar ? { toolbar: GridToolbar } : undefined}
         slotProps={
@@ -128,7 +140,15 @@ export default function DataTable(props: Props) {
               }
             : undefined
         }
-        sx={{ border: 0 }}
+        sx={{
+          border: 0,
+          "& .MuiDataGrid-cell": {
+            padding: "8px",
+          },
+          '& .MuiDataGrid-cell[data-field="sources"]': {
+            padding: "0",
+          },
+        }}
       />
     </Paper>
   );

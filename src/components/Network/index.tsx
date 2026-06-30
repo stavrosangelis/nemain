@@ -8,6 +8,7 @@ import {
   Button,
   Checkbox,
   Chip,
+  CircularProgress,
   Divider,
   FormControlLabel,
   IconButton,
@@ -24,7 +25,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import { db } from "@/data/db";
-import type { Character } from "@/data/db";
+import type { Character, RelatedCharacter } from "@/types";
 
 // Register layout extension — aliased so ESLint doesn't mistake it for a React hook
 const registerLayout: (ext: Cytoscape.Ext) => void =
@@ -178,81 +179,49 @@ const STYLESHEET: object[] = [
   },
 ];
 
-// ─── fcose layout config ──────────────────────────────────────────────────────
+// ─── Layout configs ───────────────────────────────────────────────────────────
 
-const LAYOUT = {
+const GRID_LAYOUT: Cytoscape.LayoutOptions = {
+  name: "grid",
+  animate: false,
+  padding: 40,
+};
+
+// Passed to the layout worker — runs off the main thread so high values are fine
+const FCOSE_OPTIONS = {
   name: "fcose",
   quality: "default",
   randomize: true,
-  animate: true,
-  animationDuration: 900,
-  animationEasing: "ease-out-expo",
+  animate: false,
   fit: true,
   padding: 60,
   nodeDimensionsIncludeLabels: true,
   uniformNodeDimensions: false,
   packComponents: true,
-  nodeRepulsion: 5000,
-  idealEdgeLength: 80,
+  nodeRepulsion: 100000,
+  idealEdgeLength: 200,
   edgeElasticity: 0.45,
   nestingFactor: 0.1,
-  gravity: 0.25,
-  numIter: 2500,
+  gravity: 0.05,
+  numIter: 5000,
   tile: true,
-  tilingPaddingVertical: 12,
-  tilingPaddingHorizontal: 12,
-} as unknown as Cytoscape.LayoutOptions;
-
-// ─── Helper: build elements once from db ─────────────────────────────────────
-
-function buildElements(): Cytoscape.ElementDefinition[] {
-  const nameToId = new Map(db.map((c) => [c.character_name, String(c.id)]));
-
-  const nodes: Cytoscape.ElementDefinition[] = db.map((c) => ({
-    data: {
-      id: String(c.id),
-      label: c.character_name,
-      gender: c.gender,
-    },
-  }));
-
-  const edgeSet = new Set<string>();
-  const edges: Cytoscape.ElementDefinition[] = [];
-
-  for (const char of db) {
-    const sourceId = String(char.id);
-    for (const type of ALL_EDGE_TYPES) {
-      const targets = (char[type] ?? []) as string[];
-      for (const targetName of targets) {
-        const targetId = nameToId.get(targetName);
-        if (!targetId) continue;
-        const [a, b] = [sourceId, targetId].sort();
-        const key = `${a}|${b}|${type}`;
-        if (edgeSet.has(key)) continue;
-        edgeSet.add(key);
-        edges.push({
-          data: { id: `e-${key}`, source: sourceId, target: targetId, type },
-        });
-      }
-    }
-  }
-
-  return [...nodes, ...edges];
-}
+  tilingPaddingVertical: 30,
+  tilingPaddingHorizontal: 30,
+};
 
 // ─── Sub-component: Character details panel ───────────────────────────────────
 
 interface ConnectionGroupProps {
   label: string;
   color: string;
-  names: string[];
-  onNavigate: (name: string) => void;
+  items: RelatedCharacter[];
+  onNavigate: (id: number) => void;
 }
 
 function ConnectionGroup({
   label,
   color,
-  names,
+  items,
   onNavigate,
 }: ConnectionGroupProps) {
   return (
@@ -282,11 +251,11 @@ function ConnectionGroup({
       <Box
         sx={{ display: "flex", flexDirection: "column", gap: 0.25, pl: 2.25 }}
       >
-        {names.map((name) => (
+        {items.map((rel, index) => (
           <Typography
-            key={name}
+            key={`${rel.id}.${index}`}
             variant="caption"
-            onClick={() => onNavigate(name)}
+            onClick={() => onNavigate(rel.id)}
             sx={{
               color: "#cbd5e1",
               cursor: "pointer",
@@ -294,7 +263,7 @@ function ConnectionGroup({
               "&:hover": { color: "#ffffff", textDecoration: "underline" },
             }}
           >
-            {name}
+            {rel.character_name}
           </Typography>
         ))}
       </Box>
@@ -304,7 +273,7 @@ function ConnectionGroup({
 
 interface CharacterDetailsProps {
   character: Character;
-  onNavigate: (name: string) => void;
+  onNavigate: (id: number) => void;
   onClose: () => void;
 }
 
@@ -317,7 +286,7 @@ function CharacterDetails({
     character.friendly.length > 0 ||
     character.hostile.length > 0 ||
     character.familial_links.length > 0 ||
-    (character.foster_links ?? []).length > 0;
+    character.foster_links.length > 0;
 
   return (
     <Box>
@@ -343,12 +312,12 @@ function CharacterDetails({
         </IconButton>
       </Box>
 
-      {character.alternate_names && character.alternate_names.length > 0 && (
+      {character.alternate_names.length > 0 && (
         <Typography
           variant="caption"
           sx={{ color: "#64748b", display: "block", mt: 0.25 }}
         >
-          Also: {character.alternate_names.join(", ")}
+          Also: {character.alternate_names.map((n) => n.character_name).join(", ")}
         </Typography>
       )}
 
@@ -365,16 +334,6 @@ function CharacterDetails({
                 : "rgba(244,114,182,0.15)",
             color: character.gender === "M" ? "#60A5FA" : "#F472B6",
             border: `1px solid ${character.gender === "M" ? "#60A5FA40" : "#F472B640"}`,
-          }}
-        />
-        <Chip
-          label={`Page ${character.page}`}
-          size="small"
-          sx={{
-            height: 20,
-            fontSize: "0.65rem",
-            backgroundColor: "rgba(100,116,139,0.2)",
-            color: "#94a3b8",
           }}
         />
       </Box>
@@ -395,7 +354,7 @@ function CharacterDetails({
             <ConnectionGroup
               label="Friendly"
               color={EDGE_COLORS.friendly}
-              names={character.friendly}
+              items={character.friendly}
               onNavigate={onNavigate}
             />
           )}
@@ -403,7 +362,7 @@ function CharacterDetails({
             <ConnectionGroup
               label="Hostile"
               color={EDGE_COLORS.hostile}
-              names={character.hostile}
+              items={character.hostile}
               onNavigate={onNavigate}
             />
           )}
@@ -411,15 +370,15 @@ function CharacterDetails({
             <ConnectionGroup
               label="Familial"
               color={EDGE_COLORS.familial_links}
-              names={character.familial_links}
+              items={character.familial_links}
               onNavigate={onNavigate}
             />
           )}
-          {(character.foster_links ?? []).length > 0 && (
+          {character.foster_links.length > 0 && (
             <ConnectionGroup
               label="Foster"
               color={EDGE_COLORS.foster_links}
-              names={character.foster_links ?? []}
+              items={character.foster_links}
               onNavigate={onNavigate}
             />
           )}
@@ -431,27 +390,44 @@ function CharacterDetails({
 
 // ─── Main Network component ───────────────────────────────────────────────────
 
-const ELEMENTS = buildElements();
-
 export default function Network() {
   const cyRef = useRef<Cytoscape.Core | null>(null);
 
+  const [elements, setElements] = useState<Cytoscape.ElementDefinition[] | null>(null);
+  const [layoutRunning, setLayoutRunning] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [genderFilter, setGenderFilter] = useState<"all" | "M" | "F">("all");
   const [activeTypes, setActiveTypes] = useState<Set<EdgeType>>(
     new Set(ALL_EDGE_TYPES),
   );
   const [searchValue, setSearchValue] = useState("");
+  const [sourceSearchValue, setSourceSearchValue] = useState("");
   const [pathStart, setPathStart] = useState<Character | null>(null);
   const [pathEnd, setPathEnd] = useState<Character | null>(null);
   const [pathInfo, setPathInfo] = useState<PathInfo | null>(null);
 
+  // Refs so layout callbacks stay stable (no stale closure on elements)
+  const elementsRef = useRef<Cytoscape.ElementDefinition[] | null>(null);
+  const layoutWorkerRef = useRef<Worker | null>(null);
+
+  useEffect(() => {
+    const worker = new Worker(
+      new URL("./network.worker.ts", import.meta.url),
+      { type: "module" },
+    );
+    worker.onmessage = (e: MessageEvent<Cytoscape.ElementDefinition[]>) => {
+      elementsRef.current = e.data;
+      setElements(e.data);
+      worker.terminate();
+    };
+    return () => {
+      worker.terminate();
+      layoutWorkerRef.current?.terminate();
+    };
+  }, []);
+
   const idToCharacter = useMemo(
     () => new Map(db.map((c) => [String(c.id), c])),
-    [],
-  );
-  const nameToId = useMemo(
-    () => new Map(db.map((c) => [c.character_name, String(c.id)])),
     [],
   );
   const selectedCharacter = useMemo(
@@ -459,14 +435,13 @@ export default function Network() {
     [selectedId, idToCharacter],
   );
 
-  // ── Focus a character node by name ──
-  const focusByName = useCallback(
-    (name: string) => {
+  // ── Focus a character node by numeric id ──
+  const focusById = useCallback(
+    (id: number) => {
       const cy = cyRef.current;
       if (!cy) return;
-      const id = nameToId.get(name);
-      if (!id) return;
-      const node = cy.getElementById(id);
+      const nodeId = String(id);
+      const node = cy.getElementById(nodeId);
       if (!node.length) return;
 
       const hood = node.closedNeighborhood();
@@ -475,10 +450,10 @@ export default function Network() {
         .removeClass("highlighted path-node path-edge");
       hood.removeClass("dimmed").addClass("highlighted");
       cy.animate({ center: { eles: node }, zoom: 2.5 }, { duration: 400 });
-      setSelectedId(id);
+      setSelectedId(nodeId);
       setPathInfo(null);
     },
-    [nameToId],
+    [],
   );
 
   // ── cy instance callback ──
@@ -516,8 +491,8 @@ export default function Network() {
           { duration: 250 },
         );
       });
+
     },
-    // setSelectedId and setPathInfo are stable (useState setters)
     [setSelectedId, setPathInfo],
   );
 
@@ -554,10 +529,38 @@ export default function Network() {
   const handleSearchSelect = useCallback(
     (_e: React.SyntheticEvent, character: Character | null) => {
       if (!character) return;
-      focusByName(character.character_name);
+      focusById(character.id);
       setSearchValue("");
     },
-    [focusByName],
+    [focusById],
+  );
+
+  const uniqueSourceNames = useMemo(
+    () => Array.from(new Set(db.flatMap((c) => c.sources.map((s) => s.name)))).sort(),
+    [],
+  );
+
+  const handleSourceSearchSelect = useCallback(
+    (_e: React.SyntheticEvent, sourceName: string | null) => {
+      const cy = cyRef.current;
+      if (!cy || !sourceName) return;
+
+      const matchingIds = new Set(
+        db
+          .filter((c) => c.sources.some((s) => s.name === sourceName))
+          .map((c) => String(c.id)),
+      );
+
+      cy.batch(() => {
+        cy.elements().addClass("dimmed").removeClass("highlighted path-node path-edge");
+        cy.nodes().filter((n) => matchingIds.has(n.id())).removeClass("dimmed").addClass("highlighted");
+      });
+
+      setSelectedId(null);
+      setPathInfo(null);
+      setSourceSearchValue("");
+    },
+    [],
   );
 
   // ── Path finder ──
@@ -606,15 +609,60 @@ export default function Network() {
     }
   }, [pathStart, pathEnd]);
 
-  // ── Reset layout ──
+  // ── Spawn a layout worker; apply positions directly to avoid preset-layout batch issues ──
+  const handleRunLayout = useCallback(() => {
+    const elems = elementsRef.current;
+    if (!cyRef.current || !elems) return;
+
+    layoutWorkerRef.current?.terminate();
+    setLayoutRunning(true);
+
+    const worker = new Worker(
+      new URL("./layout.worker.ts", import.meta.url),
+      { type: "module" },
+    );
+    layoutWorkerRef.current = worker;
+
+    worker.onmessage = (e: MessageEvent<Record<string, { x: number; y: number }>>) => {
+      layoutWorkerRef.current = null;
+      worker.terminate();
+      const liveCy = cyRef.current;
+      if (liveCy) {
+        const positions = e.data;
+        liveCy.batch(() => {
+          liveCy.nodes().forEach((node) => {
+            const pos = positions[node.id()];
+            if (pos) node.position(pos);
+          });
+        });
+        liveCy.fit(undefined, 60);
+      }
+      setLayoutRunning(false);
+    };
+
+    worker.onerror = () => {
+      layoutWorkerRef.current = null;
+      setLayoutRunning(false);
+    };
+
+    worker.postMessage({ elements: elems, options: FCOSE_OPTIONS });
+  }, []);
+
+  // ── Auto-run layout once elements arrive ──
+  useEffect(() => {
+    if (!elements) return;
+    handleRunLayout();
+  }, [elements, handleRunLayout]);
+
+  // ── Reset: clear highlights and fit; re-run layout ──
   const handleResetLayout = useCallback(() => {
     const cy = cyRef.current;
     if (!cy) return;
     cy.elements().removeClass("dimmed highlighted path-node path-edge");
     setSelectedId(null);
     setPathInfo(null);
-    cy.layout(LAYOUT).run();
-  }, []);
+    handleRunLayout();
+  }, [handleRunLayout]);
 
   // ── Fit to screen ──
   const handleFit = useCallback(() => {
@@ -629,7 +677,7 @@ export default function Network() {
     const cy = cyRef.current;
     if (!cy) return;
     cy.animate(
-      { zoom: Math.min(cy.zoom() * 1.3, 6), center: { eles: cy.elements() } },
+      { zoom: { level: Math.min(cy.zoom() * 1.3, 6), renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } } },
       { duration: 200 },
     );
   }, []);
@@ -638,7 +686,7 @@ export default function Network() {
     const cy = cyRef.current;
     if (!cy) return;
     cy.animate(
-      { zoom: Math.max(cy.zoom() / 1.3, 0.2), center: { eles: cy.elements() } },
+      { zoom: { level: Math.max(cy.zoom() / 1.3, 0.2), renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } } },
       { duration: 200 },
     );
   }, []);
@@ -679,8 +727,9 @@ export default function Network() {
             Character Network
           </Typography>
           <Typography variant="caption" sx={{ color: "#64748b" }}>
-            {db.length} characters ·{" "}
-            {ELEMENTS.filter((e) => e.data.source).length} connections
+            {elements === null
+              ? "Loading…"
+              : `${db.length} characters · ${elements.filter((e) => e.data.source).length} connections`}
           </Typography>
         </Box>
 
@@ -714,6 +763,30 @@ export default function Network() {
                 <TextField
                   {...params}
                   placeholder="Character name…"
+                  sx={darkInputSx}
+                />
+              )}
+              slotProps={{
+                paper: {
+                  sx: { backgroundColor: "#0f172a", color: "#e2e8f0" },
+                },
+              }}
+            />
+            <Autocomplete<string>
+              options={uniqueSourceNames}
+              filterOptions={(options, { inputValue }) => {
+                const q = inputValue.toLowerCase();
+                return options.filter((s) => s.toLowerCase().includes(q));
+              }}
+              inputValue={sourceSearchValue}
+              onInputChange={(_e, v) => setSourceSearchValue(v)}
+              onChange={handleSourceSearchSelect}
+              size="small"
+              sx={{ mt: 1 }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Source name…"
                   sx={darkInputSx}
                 />
               )}
@@ -934,13 +1007,40 @@ export default function Network() {
             </Stack>
           </Box>
 
+          {/* ── Layout ── */}
+          <Box>
+            <SectionLabel>Layout</SectionLabel>
+            <Button
+              variant="outlined"
+              size="small"
+              fullWidth
+              disabled={elements === null || layoutRunning}
+              onClick={handleRunLayout}
+              sx={{
+                borderColor: "#334155",
+                color: layoutRunning ? "#64748b" : "#94a3b8",
+                fontSize: "0.75rem",
+                textTransform: "none",
+                "&:hover": { borderColor: "#475569", backgroundColor: "rgba(255,255,255,0.04)" },
+                "&:disabled": { borderColor: "#1e293b", color: "#475569" },
+              }}
+            >
+              {layoutRunning ? "Running layout…" : "Run full layout"}
+            </Button>
+            {layoutRunning && (
+              <Typography variant="caption" sx={{ color: "#64748b", display: "block", mt: 0.75 }}>
+                UI may be unresponsive for a moment
+              </Typography>
+            )}
+          </Box>
+
           {/* ── Character Details ── */}
           {selectedCharacter && (
             <>
               <Divider sx={{ borderColor: "#1e293b" }} />
               <CharacterDetails
                 character={selectedCharacter}
-                onNavigate={focusByName}
+                onNavigate={focusById}
                 onClose={() => {
                   setSelectedId(null);
                   cyRef.current?.elements().removeClass("dimmed highlighted");
@@ -960,15 +1060,41 @@ export default function Network() {
           overflow: "hidden",
         }}
       >
-        <CytoscapeComponent
-          elements={ELEMENTS}
-          stylesheet={STYLESHEET}
-          layout={LAYOUT}
-          style={{ width: "100%", height: "100%" }}
-          cy={cyCallback}
-          minZoom={0.2}
-          maxZoom={6}
-        />
+        {elements !== null && (
+          <CytoscapeComponent
+            elements={elements}
+            stylesheet={STYLESHEET}
+            layout={GRID_LAYOUT}
+            style={{ width: "100%", height: "100%" }}
+            cy={cyCallback}
+            minZoom={0.2}
+            maxZoom={6}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ textureOnViewport: true, hideEdgesOnViewport: true, hideLabelsOnViewport: true, pixelRatio: 1 } as any)}
+          />
+        )}
+
+        {/* Loading / layout overlay */}
+        {(elements === null || layoutRunning) && (
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(15,23,42,0.85)",
+              gap: 2,
+              zIndex: 10,
+            }}
+          >
+            <CircularProgress sx={{ color: "#43946C" }} />
+            <Typography variant="caption" sx={{ color: "#64748b" }}>
+              {elements === null ? "Building graph…" : "Computing layout…"}
+            </Typography>
+          </Box>
+        )}
 
         {/* Canvas toolbar */}
         <Box

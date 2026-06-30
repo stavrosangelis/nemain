@@ -5,7 +5,7 @@ export default function HomePageView() {
     <Container maxWidth="lg" sx={{ mb: 15 }}>
       <Paper elevation={2} sx={{ p: 2, mt: 5, mb: 2 }}>
         <Typography variant="h1" sx={{ fontSize: "40px", mb: 2 }}>
-          Aided Lóegairi Búadaig
+          Nemain
         </Typography>
         <Typography variant="body2">
           Networks of Early-modern, Medieval, and Ancient Irish Narratives

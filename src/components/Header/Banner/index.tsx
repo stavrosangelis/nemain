@@ -13,7 +13,7 @@ const Banner = () => {
         }}
       >
         <Typography variant="h4" component="h1" className="banner-title">
-          Aided Lóegairi Búadaig
+          Nemain
         </Typography>
       </Box>
     </Link>

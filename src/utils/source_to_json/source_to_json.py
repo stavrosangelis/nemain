@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""Convert a PAD character spreadsheet (.xlsx or .ods) to JSON."""
+"""
+Merge all PAD character spreadsheets (.xlsx / .ods) from a folder into one JSON.
+
+Usage:
+    python3 xlsx_to_json.py [data_folder] [output.json]
+
+Defaults:
+    data_folder  →  data/02-NEMAIN/data
+    output.json  →  output-merged.json
+"""
 
 import json
 import sys
@@ -19,24 +28,28 @@ try:
 except ImportError:
     HAS_ODS = False
 
-# ODF qualified name for <text:p> (paragraph) elements
 _ODS_TEXT_P = ("urn:oasis:names:tc:opendocument:xmlns:text:1.0", "p")
-
-# Cap for number-columns-repeated expansion; prevents blowing up on trailing
-# empty-cell blocks that LibreOffice encodes with very large repeat counts.
 _ODS_MAX_REPEAT = 1024
 
-# Maps spreadsheet header names to JSON keys (used only for missing-header warnings)
-HEADER_MAP = {
-    "Character Name": "character_name",
-    "Alternate Names": "alternate_names",
-    "Page": "page",
-    "Role/Notes": "role_notes",
-    "Gender": "gender",
+# Relation fields and their output JSON keys
+RELATION_FIELDS: dict[str, str] = {
     "Friendly": "friendly",
     "Hostile": "hostile",
     "Familial links": "familial_links",
     "Foster links": "foster_links",
+}
+
+# Character-level scalar fields (merged across sources; first non-null wins)
+CHAR_SCALAR_FIELDS: dict[str, str] = {
+    "Gender": "gender",
+    "Allegiance": "allegiance",
+    "Faction": "faction",
+}
+
+# Per-source scalar fields (stored inside each sources entry)
+SOURCE_SCALAR_FIELDS: dict[str, str] = {
+    "Page": "page",
+    "Role/Notes": "role_notes",
 }
 
 
@@ -78,7 +91,6 @@ def read_ods_rows(path: str) -> list[tuple]:
             repeat = min(int(cell.getAttribute("numbercolumnsrepeated") or 1), _ODS_MAX_REPEAT)
             val = _ods_cell_text(cell)
             row_values.extend([val] * repeat)
-        # Trim trailing Nones produced by repeated empty cells at row end
         while row_values and row_values[-1] is None:
             row_values.pop()
         if row_values:
@@ -87,7 +99,7 @@ def read_ods_rows(path: str) -> list[tuple]:
 
 
 # ---------------------------------------------------------------------------
-# Core transformation (format-agnostic)
+# Row helpers
 # ---------------------------------------------------------------------------
 
 def clean(value) -> str | None:
@@ -117,91 +129,181 @@ def parse_header_groups(header_row: tuple) -> dict[str, list[int]]:
     return groups
 
 
-def row_to_record(row: tuple, groups: dict, row_id: int) -> dict:
-    """Convert one spreadsheet row to a JSON-ready dict."""
-
-    def scalar(field_name: str):
-        indices = groups.get(field_name, [])
-        if not indices:
-            return None
-        idx = indices[0]
-        return clean(row[idx]) if idx < len(row) else None
-
-    def as_list(field_name: str) -> list:
-        return [
-            v
-            for idx in groups.get(field_name, [])
-            if idx < len(row) and (v := clean(row[idx])) is not None
-        ]
-
-    page = scalar("Page")
-    if page is not None:
-        try:
-            page = int(float(page))
-        except (ValueError, TypeError):
-            page = None
-
-    return {
-        "id": row_id,
-        "character_name": scalar("Character Name"),
-        "alternate_names": scalar("Alternate Names"),
-        "page": page,
-        "role_notes": scalar("Role/Notes"),
-        "gender": scalar("Gender"),
-        "friendly": as_list("Friendly"),
-        "hostile": as_list("Hostile"),
-        "familial_links": as_list("Familial links"),
-        "foster_links": scalar("Foster links"),
-    }
+def scalar_from_row(row: tuple, groups: dict, field: str) -> str | None:
+    indices = groups.get(field, [])
+    if not indices:
+        return None
+    idx = indices[0]
+    return clean(row[idx]) if idx < len(row) else None
 
 
-def convert(input_path: str, output_path: str | None = None) -> Path:
-    suffix = Path(input_path).suffix.lower()
-    if suffix == ".xlsx":
-        all_rows = read_xlsx_rows(input_path)
-    elif suffix == ".ods":
-        all_rows = read_ods_rows(input_path)
-    else:
-        print(f"Error: unsupported format '{suffix}'. Use .xlsx or .ods.")
+def list_from_row(row: tuple, groups: dict, field: str) -> list[str]:
+    return [
+        v
+        for idx in groups.get(field, [])
+        if idx < len(row) and (v := clean(row[idx])) is not None
+    ]
+
+
+# ---------------------------------------------------------------------------
+# Merge logic
+# ---------------------------------------------------------------------------
+
+def merge_all(data_folder: str, output_path: str) -> Path:
+    folder = Path(data_folder)
+    files = sorted(folder.glob("*.xlsx")) + sorted(folder.glob("*.ods"))
+
+    if not files:
+        print(f"No .xlsx or .ods files found in {data_folder}")
         sys.exit(1)
 
-    if not all_rows:
-        raise ValueError(f"{input_path}: spreadsheet is empty")
+    characters: dict[int, dict] = {}          # id → character dict
+    name_to_id: dict[str, int] = {}           # any name (primary or alt) → id
+    raw_relations: dict[int, dict[str, list]] = {}  # id → {field: [(name, source)]}
+    next_id = 1
 
-    groups = parse_header_groups(all_rows[0])
+    def lookup_id(primary: str, alts: list[str]) -> int | None:
+        cid = name_to_id.get(primary)
+        if cid:
+            return cid
+        for alt in alts:
+            cid = name_to_id.get(alt)
+            if cid:
+                return cid
+        return None
 
-    missing = [h for h in HEADER_MAP if h not in groups]
-    if missing:
-        print(f"Warning: expected header(s) not found: {missing}")
+    for f in files:
+        source_name = f.stem
+        suffix = f.suffix.lower()
 
-    records = []
-    for row in all_rows[1:]:
-        record = row_to_record(row, groups, len(records) + 1)
-        if record["character_name"] is None:
+        try:
+            all_rows = read_xlsx_rows(str(f)) if suffix == ".xlsx" else read_ods_rows(str(f))
+        except Exception as exc:
+            print(f"Warning: skipping {f.name} — {exc}")
             continue
-        records.append(record)
 
-    out = Path(output_path) if output_path else Path(input_path).with_suffix(".json")
+        if not all_rows:
+            continue
+
+        groups = parse_header_groups(all_rows[0])
+
+        for row in all_rows[1:]:
+            char_name = scalar_from_row(row, groups, "Character Name")
+            # Skip blank rows and section-heading rows (marked with %)
+            if not char_name or char_name.startswith("%"):
+                continue
+
+            alt_names: list[str] = list_from_row(row, groups, "Alternate Names")
+
+            existing_id = lookup_id(char_name, alt_names)
+
+            if existing_id is None:
+                cid = next_id
+                next_id += 1
+
+                char: dict = {
+                    "id": cid,
+                    "character_name": char_name,
+                    "alternate_names": list(alt_names),
+                    "gender": None,
+                    "allegiance": None,
+                    "faction": None,
+                    "friendly": [],
+                    "hostile": [],
+                    "familial_links": [],
+                    "foster_links": [],
+                    "sources": [],
+                }
+                characters[cid] = char
+                raw_relations[cid] = {field: [] for field in RELATION_FIELDS}
+
+                name_to_id[char_name] = cid
+                for alt in alt_names:
+                    name_to_id.setdefault(alt, cid)
+            else:
+                cid = existing_id
+                char = characters[cid]
+
+                # Register this primary name in the lookup (may have been found via an alt)
+                name_to_id.setdefault(char_name, cid)
+
+                # Merge any new alternate names
+                existing_alts: set[str] = set(char["alternate_names"])
+                for alt in alt_names:
+                    if alt not in existing_alts:
+                        char["alternate_names"].append(alt)
+                        existing_alts.add(alt)
+                    name_to_id.setdefault(alt, cid)
+
+            # Character-level scalars: first non-null value across all sources wins
+            for field, key in CHAR_SCALAR_FIELDS.items():
+                if char[key] is None:
+                    val = scalar_from_row(row, groups, field)
+                    if val is not None:
+                        char[key] = val
+
+            # Per-source entry
+            page_raw = scalar_from_row(row, groups, "Page")
+            page: int | str | None = None
+            if page_raw is not None:
+                try:
+                    page = int(float(page_raw))
+                except (ValueError, TypeError):
+                    page = page_raw
+
+            char["sources"].append({
+                "name": source_name,
+                "page": page,
+                "role_notes": scalar_from_row(row, groups, "Role/Notes"),
+            })
+
+            # Accumulate raw relation entries for second-pass resolution
+            for field in RELATION_FIELDS:
+                for name in list_from_row(row, groups, field):
+                    raw_relations[cid][field].append((name, source_name))
+
+    # Second pass: resolve relation names → character ids
+    for cid, rels in raw_relations.items():
+        char = characters[cid]
+        for field, json_key in RELATION_FIELDS.items():
+            seen: set[tuple] = set()
+            entries: list[dict] = []
+            for (name, source) in rels[field]:
+                rel_id = name_to_id.get(name)
+                sig = (rel_id, name, source)
+                if sig not in seen:
+                    seen.add(sig)
+                    entries.append({
+                        "id": rel_id,
+                        "character_name": name,
+                        "source": source,
+                    })
+            char[json_key] = entries
+
+    result = list(characters.values())
+
+    out = Path(output_path)
     with out.open("w", encoding="utf-8") as fh:
-        json.dump(records, fh, ensure_ascii=False, indent=2)
+        json.dump(result, fh, ensure_ascii=False, indent=2)
 
+    print(f"Merged {len(files)} file(s) → {len(result)} unique character(s) → {out}")
     return out
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python3 xlsx_to_json.py <input.xlsx|input.ods> [output.json]")
+    data_folder = "data/02-NEMAIN/data"
+    output_path = "output-merged.json"
+
+    if len(sys.argv) >= 2:
+        data_folder = sys.argv[1]
+    if len(sys.argv) >= 3:
+        output_path = sys.argv[2]
+
+    if not Path(data_folder).is_dir():
+        print(f"Error: folder not found: {data_folder}")
         sys.exit(1)
 
-    input_file = sys.argv[1]
-    output_file = sys.argv[2] if len(sys.argv) > 2 else None
-
-    if not Path(input_file).exists():
-        print(f"Error: file not found: {input_file}")
-        sys.exit(1)
-
-    out_path = convert(input_file, output_file)
-    print(f"Wrote {out_path}")
+    merge_all(data_folder, output_path)
 
 
 if __name__ == "__main__":
